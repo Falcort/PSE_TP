@@ -14,12 +14,12 @@ int main (int argc, char ** argv)
 		return -1;
 	}
 	int dF1 = open (argv[1], O_RDONLY);
-		if (dF1 == -1)
-		{
-			perror("Fichier source introuvable");
-			return -1;
-		}
-	int dF2 = open (argv[2], O_WRONLY | O_CREAT);
+	if (dF1 == -1)
+	{
+		perror("Fichier source introuvable");
+		return -1;
+	}
+	int dF2 = open (argv[2], O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR);
 	if (dF2 == -1)
 	{
 		perror("Fichier destination introuvable");
@@ -33,18 +33,58 @@ int main (int argc, char ** argv)
 		{
 			perror("erreur de lecture");
 			close (dF1);
+			if (close(dF1) == -1)
+			{
+				perror("problème de fermeture");
+				return -1;
+			}
 			close (dF2);
+			if (close(dF2) == -1)
+			{
+				perror("problème de fermeture");
+				return -1;
+			}
 			return -1;
+		}
+		else
+		{
+			perror("Erreur de lécture");
+			return -1
 		}
 		if (write(dF2, data, strlen(data)) < 0)
 		{
 			perror("problème d’écriture");
 			close (dF1);
+			if (close(dF1) == -1)
+			{
+				perror("problème de fermeture");
+				return -1;
+			}
 			close (dF2);
+			if (close(dF2) == -1)
+			{
+				perror("problème de fermeture");
+				return -1;
+			}
+			return -1;
+		}
+		else
+		{
+			perror("Erreur d'écriture");
 			return -1;
 		}
 		close (dF1);
+		if (close(dF1) == -1)
+		{
+			perror("problème de fermeture");
+			return -1;
+		}
 		close (dF2);
+		if (close(dF2) == -1)
+		{
+			perror("problème de fermeture");
+			return -1;
+		}
 		return 0;
 	}
 }
